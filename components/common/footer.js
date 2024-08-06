@@ -1,73 +1,41 @@
 'use client';
-import Image from 'next/image';
-import { NavLinksList } from '@/lib/navLinksList';
-import { usePathname } from 'next/navigation';
-import { defaultLocale } from '@/lib/i18n';
-import { useEffect, useState } from 'react';
 
-export default function Footer() {
-	const pathname = usePathname();
-	const [langName, setLangName] = useState(defaultLocale);
-	const [linkList, setLinkList] = useState([]);
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { defaultLocale, getDictionary } from '@/lib/i18n';
+
+export default function Footer({ params }) {
+	const [dict, setDict] = useState(null);
+	const currentYear = new Date().getFullYear();
+	const langName = params?.lang || defaultLocale; // 使用可选链操作符进行安全访问
 
 	useEffect(() => {
-		const fetchLinksList = async () => {
-			if (pathname === '/') {
-				setLangName(defaultLocale);
-			} else {
-				setLangName(pathname.split('/')[1]);
-			}
-			setLinkList(NavLinksList[`LINK_${langName.toUpperCase()}`] || []);
+		const fetchDictionary = async () => {
+			const dictionary = await getDictionary(langName);
+			setDict(dictionary);
 		};
-		fetchLinksList();
-	}, [pathname, langName]);
+
+		fetchDictionary();
+	}, [langName]);
+
+	if (!dict) {
+		return null; // 或者你可以显示一个加载指示器
+	}
 
 	return (
-		<footer className='w-full px-5 py-10 bg-[#202020] text-[#f7f7f7] '>
-			<div className='max-w-[1024px] mx-auto flex flex-col md:flex-row justify-between items-center md:items-end gap-2 text-sm'>
-				<div className='flex flex-col items-center md:items-start'>
-					<a
-						aria-label='landing page template'
-						className='flex items-center mb-3'
-						title='landing page template'
-						href={`/${langName}`}
-					>
-						<Image
-							width={200}
-							height={200}
-							src={'/logo.gif'}
-							className='transition-all hover:scale-110 w-6 md:w-10 h-6 md:h-10'
-							alt='logo'
-						></Image>
-						<h2 className='ml-3 font-bold leading-5'>Landing Page</h2>
-					</a>
-					<div className='flex flex-wrap justify-center gap-x-2 md:gap-x-5 gap-y-1'>
-						{linkList.map((link, index) => {
-							return (
-								<a
-									key={index}
-									title={link.name}
-									href={`/${langName}${link.url}`}
-								>
-									{link.name}
-								</a>
-							);
-						})}
-					</div>
+		<>
+			<footer className={'w-full bg-[#202020] text-[#f7f7f7]'}>
+				<div className={'max-w-[1280px] mx-auto px-[15px] py-[20px]'}>
+					<p className={'text-center'}>{dict.FooterSection.Copyright} © {currentYear}
+						<Link
+							href="/"
+							className={'hover:text-blue-500 px-[5px]'}
+						>
+							{dict.Product.Name}
+						</Link>
+					</p>
 				</div>
-
-				<p>
-					©{' '}
-					<a
-						title={'huglemon'}
-						href='http://huglemon.com?rel=landingpage'
-						target='_blank'
-					>
-						hugLemon
-					</a>{' '}
-					present.
-				</p>
-			</div>
-		</footer>
+			</footer>
+		</>
 	);
 }

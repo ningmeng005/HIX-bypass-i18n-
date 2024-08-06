@@ -36,5 +36,19 @@
 	"CTAButton": {
 		"btn1": "Get Source Code",
 		"btn2": "View Docs"
+	},
+
+
+
+	"Product": {
+		"Name": "HIX AI Bypass"
+	},
+	"HeroSection": {
+		"h1": "It’s Not Just for Rewriting; It’s to Bypass All AI Content Detectors",
+		"text": "HIX AI Bypass transforms AI-generated texts into human-like ones, and no AI detector can ever tell they’re not written by you.",
+		"btn": "Humanize to Bypass Al Detection for Free"
+	},
+	"FooterSection": {
+		"Copyright": "Copyright"
 	}
 }
